@@ -8,8 +8,8 @@ $discordBotLogo = 'https://freeiconshop.com/wp-content/uploads/edd/book-open-fla
 $botName = 'Study Bot'
 
 Import-Module $modulesToImport
-$encryptedWebhookUri = Import-Clixml "$PSScriptRoot/EncryptedCredentials/StudyBotDiscordWebhook.clixml"
-$plaintextWebhookUri = $encryptedWebhookUri | ConvertFrom-SecureString
+$encryptedWebhookUri = Import-Clixml "$PSScriptRoot/EncryptedCredentials/EbookDiscordWebhook.clixml"
+$plaintextWebhookUri = $encryptedWebhookUri | ConvertFrom-SecureString | ConvertFrom-Json
 $request = Invoke-WebRequest $uri
 $eBook = $request.Content | Remove-HtmlTags | Select-String '^Free.eBook.*'
 
@@ -21,5 +21,7 @@ $discordBody = @"
 **Title:** $ebook
 "@
 
-& "$PSScriptRoot/Send-DiscordWebhook.ps1" -webhook_uri $plaintextWebhookUri -username $botName -content $discordBody -avatar_url $discordBotLogo
+$plaintextWebhookUri | ForEach-Object {  
+    & "$PSScriptRoot/Send-DiscordWebhook.ps1" -webhook_uri $_ -username $botName -content $discordBody -avatar_url $discordBotLogo
+}
 
