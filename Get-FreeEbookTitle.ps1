@@ -15,7 +15,8 @@ $eBook = $request.Content | Remove-HtmlTags | Select-String '^Free.eBook.*'
 
 $discordBody = @"
 **__Today's Free Packt E-Book:__**
-*This e-book must be read using the publisher's online reader, no downloads*
+*This e-book must be read using the publisher's online reader, no downloads.*
+*Once you claim this free e-book on Packt's website, it stays in your library indefinitely.*
 
 **Link:** $uri
 **Title:** $ebook
