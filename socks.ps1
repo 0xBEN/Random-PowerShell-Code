@@ -1,5 +1,5 @@
 function socks {
-	
+
     [CmdletBinding(DefaultParameterSetName = 'On')]
     param (
         [Parameter(Mandatory = $true, ParameterSetName = 'On')]
@@ -16,6 +16,11 @@ function socks {
         [ValidateNotNullOrEmpty()]	
         [String]
         $PrivateKeyFile,
+
+        [Parameter(ParameterSetName = 'On', HelpMessage = 'Format should be Option=Value')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Options,
 
         [Parameter(ParameterSetName = 'On')]
         [ValidateRange(1,65535)]
@@ -54,14 +59,14 @@ function socks {
             return
         }
         else {
+            $argumentList = @("$Username@$ComputerName", "-p $SSHPort", '-f', '-C', '-q', '-N', "-D $TunnelPort")
+            if ($PrivateKeyFile) { $argumentList += "-i $PrivateKeyFile" }
+            if ($Options) { $argumentList += "-o $Options" }
+
+            
             Set-Itemproperty -Path "HKCU:Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name ProxyServer -Value "socks=localhost`:$TunnelPort"
             Set-Itemproperty -Path "HKCU:Software\Microsoft\Windows\CurrentVersion\Internet Settings" -Name ProxyEnable -Value 1
-            if ($PrivateKeyFile) {
-                Start-Process ssh -LoadUserProfile -ArgumentList "-i $PrivateKeyFile $Username@$ComputerName -p $SSHPort -f -C -q -N -D $TunnelPort" -NoNewWindow
-            }
-            else {
-                Start-Process ssh -LoadUserProfile -ArgumentList "$Username@$ComputerName -p $SSHPort -f -C -q -N -D $TunnelPort" -NoNewWindow
-            }
+            Start-Process ssh -ArgumentList $argumentList -NoNewWindow -LoadUserProfile -Wait
         }
     }
 
