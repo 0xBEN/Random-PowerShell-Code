@@ -13,6 +13,12 @@ $plaintextWebhookUri = $encryptedWebhookUri | ConvertFrom-SecureString | Convert
 $request = Invoke-WebRequest $uri
 $eBook = $request.Content | Remove-HtmlTags | Select-String '^Free.eBook.*'
 
+while ([String]::IsNullOrWhiteSpace($eBook)) {
+    Start-Sleep -Seconds 120
+    $request = Invoke-WebRequest $uri
+    $eBook = $request.Content | Remove-HtmlTags | Select-String '^Free.eBook.*'
+}
+
 $discordBody = @"
 **__Today's Free Packt E-Book:__**
 *This e-book must be read using the publisher's online reader, no downloads.*
