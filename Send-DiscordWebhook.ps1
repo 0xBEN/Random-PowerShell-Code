@@ -29,5 +29,5 @@ begin {
 }
 process {
     $jsonBody = $PSBoundParameters | ConvertTo-Json -Depth 10
-    Invoke-RestMethod -Method Post -Uri $webhook_uri -Body $jsonBody -Content $content | Out-Null
+    Invoke-RestMethod -Method Post -Uri $webhook_uri -Body $jsonBody -Content $contentType | Out-Null
 }
