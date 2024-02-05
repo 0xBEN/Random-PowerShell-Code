@@ -25,7 +25,7 @@ begin {
     $InformationPreference = 'SilentlyContinue'
     $VerbosePreference = 'SilentlyContinue'
     $ProgressPreference = 'SilentlyContinue'
-    $content = 'application/json'
+    $contentType = 'application/json'
 }
 process {
     $jsonBody = $PSBoundParameters | ConvertTo-Json -Depth 10
